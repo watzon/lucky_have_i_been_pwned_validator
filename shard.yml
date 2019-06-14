@@ -1,0 +1,13 @@
+name: lucky_have_i_been_pwned_validator
+version: 0.1.0
+
+authors:
+  - Chris Watson <chris@watzon.me>
+
+development_dependencies:
+  avram:
+    github: luckyframework/avram
+
+crystal: 0.29.0
+
+license: MIT
