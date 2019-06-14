@@ -38,12 +38,6 @@ The `validate_not_pwned` method accepts a second argument for a custom message.
 Avram::Validations::HaveIBeenPwned.validate_not_pwned(field, "is PWNED!")
 ```
 
-If your form is including `Avram::Validations` already you can also get rid of that part.
-
-```crystal
-HaveIBeenPwned.validate_not_pwned(field, "is PWNED!")
-```
-
 ## Contributing
 
 1. Fork it (<https://github.com/watzon/lucky_have_i_been_pwned_validator/fork>)
