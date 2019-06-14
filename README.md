@@ -28,14 +28,14 @@ Then implement
 ```crystal
 def prepare
   # Where `field` is the field instance (probably password).
-  Avram::Validations::HaveIBeenPwned.validate_not_pwned(field)
+  HaveIBeenPwned.validate_not_pwned(field)
 end
 ```
 
 The `validate_not_pwned` method accepts a second argument for a custom message.
 
 ```crystal
-Avram::Validations::HaveIBeenPwned.validate_not_pwned(field, "is PWNED!")
+HaveIBeenPwned.validate_not_pwned(field, "is PWNED!")
 ```
 
 ## Contributing
