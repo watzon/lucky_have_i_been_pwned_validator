@@ -2,6 +2,8 @@
 
 This is a simple password validator for Lucky that ensures the password isn't in the [Have I Been Pwned](https://haveibeenpwned.com/) database.
 
+![In Action](https://raw.githubusercontent.com/watzon/lucky_have_i_been_pwned_validator/master/img/in-action.gif)
+
 ## Installation
 
 1. Add the dependency to your `shard.yml`:
