@@ -1,38 +1,44 @@
+require "digest/sha1"
 require "http/client"
-require "openssl"
 
 module HaveIBeenPwned
   extend self
 
   # Validataes that a password is not in the Have I Been Pwned database.
-  def validate_not_pwned(field, error_message = nil)
-    error_message ||= "has been pwned!"
+  def validate_not_pwned(
+    attribute : Avram::Attribute,
+    error_message = "has been pwned!",
+    raise_exception = false
+  ) : Void
+    attribute.value.try do |value|
+      found = password_in_hibp?(value, raise_exception)
 
-    field.value.try do |value|
-      if password_in_hibp?(value)
-        field.add_error(error_message)
-      end
+      attribute.add_error(error_message % found) if found
     end
   end
 
-  private def password_in_hibp?(password)
-    hash = get_sha1_hash(password).upcase
-    first_five = hash[0...5]
-    the_rest = hash[5..-1]
+  private def password_in_hibp?(
+    password : String,
+    raise_exception : Bool
+  ) : Int32?
+    hash = Digest::SHA1.hexdigest(password)
+    prefix = hash[0...5]
+    suffix = hash[5..-1]
 
-    response = HTTP::Client.get("https://api.pwnedpasswords.com/range/" + first_five)
-    hashes = response.body.split("\r\n")
-        .map(&.split(':'))
-        .to_h
+    response = HTTP::Client.get "https://api.pwnedpasswords.com/range/#{prefix}"
 
-    exists = hashes.has_key?(the_rest)
+    if response.status_code == 200
+      response.body.each_line do |line|
+        if line =~ /^#{suffix}\:(\d+)$/i && (found = $1.to_i?)
+          return found
+        end
+      end
+    end
+
+    if raise_exception
+      raise ApiError.new("api.pwnedpasswords.com returned #{response.status_code}")
+    end
   end
 
-  private def get_sha1_hash(password)
-    digest = OpenSSL::Digest.new("SHA1")
-    digest.update(password)
-    hash = digest.to_s
-    digest.reset
-    hash
-  end
+  class ApiError < Exception; end
 end
