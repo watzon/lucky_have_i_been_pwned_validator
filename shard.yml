@@ -7,7 +7,11 @@ authors:
 development_dependencies:
   avram:
     github: luckyframework/avram
+    version: ~> 0.21.0
+  webmock:
+    github: manastech/webmock.cr
+    branch: master
 
-crystal: 0.29.0
+crystal: ">= 1.0.0"
 
 license: MIT
