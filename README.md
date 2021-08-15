@@ -50,7 +50,7 @@ more resilient:
 
 ```crystal
 begin
-  HaveIBeenPwned.validate_not_pwned(password)
+  HaveIBeenPwned.validate_not_pwned(password, raise_exception: true)
 rescue e : HaveIBeenPwned::ApiError
   # report this to an error monitoring service for example...
 end
