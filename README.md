@@ -18,26 +18,42 @@ This is a simple password validator for Lucky that ensures the password isn't in
 
 ## Usage
 
-First require the shard
+First require the shard:
 
 ```crystal
-# Require this anywhere before your validations
+# in your app's src/shards.cr
 require "lucky_have_i_been_pwned_validator"
 ```
 
-Then implement
+Then perform the call in your operation(s):
 
 ```crystal
-def prepare
-  # Where `field` is the field instance (probably password).
-  HaveIBeenPwned.validate_not_pwned(field)
+class SignUpUser < User::SaveOperation
+  ...
+
+  before_save do
+    ...
+    HaveIBeenPwned.validate_not_pwned(password)
+    ...
+  end
 end
 ```
 
-The `validate_not_pwned` method accepts a second argument for a custom message.
+The `validate_not_pwned` method accepts a second argument for a custom message:
 
 ```crystal
-HaveIBeenPwned.validate_not_pwned(field, "is PWNED!")
+HaveIBeenPwned.validate_not_pwned(password, "is PWNED %s times!")
+```
+
+And you can also choose to catch API errors from the pwned API to make your app
+more resilient:
+
+```crystal
+begin
+  HaveIBeenPwned.validate_not_pwned(password)
+rescue e : HaveIBeenPwned::ApiError
+  # report this to an error monitoring service for example...
+end
 ```
 
 ## Contributing
